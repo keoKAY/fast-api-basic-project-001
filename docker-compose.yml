@@ -1,0 +1,23 @@
+services: 
+  postgres_srv: 
+    image: postgres:alpine
+    ports: 
+      - 5432:5432
+    container_name: postgres_container
+    environment: 
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password 
+      POSTGRES_DB: dbname
+    volumes:
+      - postgresql-python:/var/lib/postgresql/data
+  web-srv: 
+    build: . 
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8080
+    volumes:
+      - ./app:/app/app
+    depends_on: 
+      - postgres_srv 
+    env_file: 
+      - .env 
+volumes:
+  postgresql-python: 
